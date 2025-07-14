@@ -5,9 +5,9 @@
 以下列出一些常用的擴充：
 
 ```sh
-# Git
+# git
 code --install-extension eamodio.gitlens
-# Terminal
+# terminal
 code --install-extension ms-vscode.powershell
 # Python
 code --install-extension ms-python.python
@@ -17,7 +17,7 @@ code --install-extension ms-toolsai.jupyter
 # AI
 code --install-extension GitHub.copilot
 code --install-extension ms-windows-ai-studio.windows-ai-studio
-# Others
+# others
 code --install-extension ms-vscode.live-server
 ```
 
@@ -37,10 +37,14 @@ code --install-extension ms-vscode.live-server
 @id:files.trimTrailingWhitespace
 # terminal
 @id:terminal.integrated.defaultProfile.windows
-# python
+@id:terminal.integrated.suggest.enabled
+# Python
 @id:python.defaultInterpreterPath
 # ruff
 @id:ruff.configuration
+# GitHub Copilot
+@id:github.copilot.chat.localeOverride
+@id:chat.tools.autoApprove
 ```
 
 ```json5
@@ -56,7 +60,8 @@ code --install-extension ms-vscode.live-server
     "files.trimTrailingWhitespace": true,                              // 儲存時自動刪除每行最後所有的空白
     // terminal
     "terminal.integrated.defaultProfile.windows": "Command Prompt",    // 預設開啟哪種 Terminal
-    // python
+    "terminal.integrated.suggest.enabled": true,                       // 開啟 PowerShell 擴充的提示
+    // Python
     "python.defaultInterpreterPath": "\\path\\to\\python.exe",         // 預設的 Python Interpreter
     // ruff
     "ruff.configuration": {                                            // Python Ruff 的設定檔
@@ -78,6 +83,9 @@ code --install-extension ms-vscode.live-server
             "docstring-code-format": true,
             "docstring-code-line-length": 60
         }
-    }
+    },
+    // GitHub Copilot
+    "github.copilot.chat.localeOverride": "zh-TW",                     // Chat View 的回應語言
+    "chat.tools.autoApprove": true                                     // Chat View Agent Mode 自動同意
 }
 ```
