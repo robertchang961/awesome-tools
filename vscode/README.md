@@ -42,9 +42,19 @@ code --install-extension ms-vscode.live-server
 @id:python.defaultInterpreterPath
 # ruff
 @id:ruff.configuration
+# chat
+@id:chat.agent.maxRequests
+@id:chat.tools.autoApprove
+@id:chat.mcp.discovery.enabled
+@id:chat.instructionsFilesLocations
+@id:chat.promptFilesLocations
+@id:chat.modeFilesLocations
 # GitHub Copilot
 @id:github.copilot.chat.localeOverride
-@id:chat.tools.autoApprove
+# GitHub Copilot / experimental
+@id:github.copilot.chat.agent.currentEditorContext.enabled
+@id:github.copilot.chat.agent.terminal.allowList
+@id:github.copilot.chat.agent.terminal.denyList
 ```
 
 ```json5
@@ -84,8 +94,24 @@ code --install-extension ms-vscode.live-server
             "docstring-code-line-length": 60
         }
     },
+    // chat
+    "chat.agent.maxRequests": 100,                                     // Chat View Agent Mode 的最大 Requests
+    "chat.tools.autoApprove": true,                                    // Chat View Agent Mode 自動同意
+    "chat.mcp.discovery.enabled": true,                                // 是否自動尋找 MCP 設定檔案
+    "chat.instructionsFilesLocations": {                               // 客製化 instructions 檔案放置路徑
+        ".github/instructions": true
+    },
+    "chat.promptFilesLocations": {                                     // 客製化 prompts 檔案放置路徑
+        ".github/prompts": true
+    },
+    "chat.modeFilesLocations": {                                       // 客製化 chatmodes 檔案放置路徑
+        ".github/chatmodes": true
+    },
     // GitHub Copilot
     "github.copilot.chat.localeOverride": "zh-TW",                     // Chat View 的回應語言
-    "chat.tools.autoApprove": true                                     // Chat View Agent Mode 自動同意
+    // GitHub Copilot / experimental
+    "github.copilot.chat.agent.currentEditorContext.enabled": true,    // Chat View 是否要預設加入當前檔案到 Context 中
+    "github.copilot.chat.agent.terminal.allowList": {},                // Chat View Agent Mode 同意的命令表單
+    "github.copilot.chat.agent.terminal.denyList": {},                 // Chat View Agent Mode 不同意的命令表單
 }
 ```
