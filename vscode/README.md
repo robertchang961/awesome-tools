@@ -29,12 +29,15 @@ code --install-extension ms-vscode.live-server
 # editor
 @id:editor.fontSize
 @id:editor.tabSize
+@id:editor.scrollOnMiddleClick
 # files
 @id:files.autoSave
 @id:files.encoding
 @id:files.insertFinalNewline
 @id:files.trimFinalNewlines
 @id:files.trimTrailingWhitespace
+# workbench
+@id:workbench.settings.showAISearchToggle
 # terminal
 @id:terminal.integrated.defaultProfile.windows
 @id:terminal.integrated.suggest.enabled
@@ -62,12 +65,15 @@ code --install-extension ms-vscode.live-server
     // editor
     "editor.fontSize": 14,                                             // 文字大小
     "editor.tabSize": 4,                                               // 一個 Tab 為多少個空白
+    "editor.scrollOnMiddleClick": true,                                // 使用滑鼠中鍵來滑動檔案
     // files
     "files.autoSave": "onFocusChange",                                 // 自動儲存檔案
     "files.encoding": "utf8",                                          // Encoding 設定
     "files.insertFinalNewline": true,                                  // 儲存時自動新增檔案最後一個空白行
     "files.trimFinalNewlines": true,                                   // 儲存時自動刪除檔案最後多餘的空白行 (只會剩下最後一個空白行)
     "files.trimTrailingWhitespace": true,                              // 儲存時自動刪除每行最後所有的空白
+    // workbench
+    "workbench.settings.showAISearchToggle": true,                     // 在 Settings 啟用 AI Search 的 icon (快捷鍵 Ctrl + i)
     // terminal
     "terminal.integrated.defaultProfile.windows": "Command Prompt",    // 預設開啟哪種 Terminal
     "terminal.integrated.suggest.enabled": true,                       // 開啟 PowerShell 擴充的提示
@@ -85,7 +91,7 @@ code --install-extension ms-vscode.live-server
                 "C90", "D", "N",
                 "A", "ANN", "ARG", "B", "COM", "C4", "PT", "Q", "SIM"
             ],
-            "ignore": ["E501"]
+            "ignore": ["E501", "D413"]
         },
         "format": {
             "quote-style": "double",
