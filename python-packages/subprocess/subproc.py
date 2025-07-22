@@ -242,7 +242,7 @@ class Mount:
 
     def add_cmdkey(self) -> None:
         """Add the cmdkey for Windows credential manager."""
-        shell = bool(" " in self.username or " " in self.password)
+        shell = " " in self.username or " " in self.password
         ret = Subproc.run(f'cmdkey /list "{self.host}"', check=False)
         Subproc.run(f'cmdkey /delete:"{self.host}"', check=False)
         Subproc.run(f'cmdkey /add:"{self.host}" /user:"{self.username}" /pass:"{self.password}"', shell=shell)
