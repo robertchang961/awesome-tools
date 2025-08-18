@@ -6,12 +6,14 @@ Provides:
 """
 
 import atexit
-import ipaddress
 import re
 import shlex
 import subprocess
 import time
 from datetime import datetime
+from ipaddress import IPv4Address
+
+from pydantic import BaseModel, Field, field_validator
 
 
 def pt(
@@ -99,146 +101,65 @@ class Subproc:
         return result.stdout
 
 
-class Mount:
+class Mount(BaseModel):
     """Add a cmdkey and mount a network drive. Copy files to/from the remote server using SCP.
 
     Attributes:
-        _host (str | None): The host IP address.
-        _port (int | None): The port number.
-        _username (str | None): The username.
-        _password (str | None): The password.
-        _free_letter (str | None): The first available drive letter.
+        host (str): The host IP address.
+        username (str): The username.
+        password (str): The password.
+        port (int): The port number. Defaults to 22.
+        free_letter (str | None): The first available drive letter.
     """
 
-    def __init__(self) -> None:
-        """Initialize Mount object with default values."""
-        self._host = None
-        self._port = None
-        self._username = None
-        self._password = None
-        self._free_letter = None
+    host: str
+    port: int = Field(default=22, ge=1, le=65535)
+    username: str
+    password: str
+    free_letter: str | None = Field(default=None, description="First available drive letter")
 
-    @property
-    def host(self) -> str | None:
-        """Get the SSH server host.
+    @field_validator("host")
+    @classmethod
+    def validate_host(cls, value: str) -> str:
+        """Validate and convert host to IPv4Address."""
+        IPv4Address(value)
+        return value
+
+    @field_validator("free_letter")
+    @classmethod
+    def validate_free_letter(cls, value: str | None) -> str:
+        """Validate and convert free_letter to uppercase."""
+        print(value)
+        if value is None:
+            value = cls.get_free_drive_letter()
+        return value
+
+    @staticmethod
+    def get_free_drive_letter() -> str:
+        """Get a free drive letter for Windows.
 
         Returns:
-            host (str | None): The SSH server host (IPv4 address).
-        """
-        return self._host
-
-    @host.setter
-    def host(self, host: str) -> None:
-        """Set the SSH server host.
-
-        Args:
-            host (str): The SSH server host (IPv4 address).
+            free_letter (str): The first available drive letter.
 
         Raises:
-            ipaddress.AddressValueError: If host is not a valid IPv4 address.
+            RuntimeError: If no available drive letters.
         """
-        ipaddress.IPv4Address(host)
-        self._host = host
+        # all possible drive letters A-Z
+        all_letters = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
-    @property
-    def port(self) -> int | None:
-        """Get the SSH server port.
+        # get the list of used drive letters
+        result = Subproc.run("wmic logicaldisk get caption")
+        used_letters = result.split()
 
-        Returns:
-            port (int | None): The SSH server port.
-        """
-        return self._port
+        # remove used letters from the set of all letters
+        free_letters = all_letters - {letter.strip(":") for letter in used_letters if ":" in letter}
 
-    @port.setter
-    def port(self, port: int) -> None:
-        """Set the SSH server port.
-
-        Args:
-            port (int): The SSH server port.
-
-        Raises:
-            ValueError: If port is not an integer between 1 and 65535.
-        """
-        if not isinstance(port, int) or (not 1 <= port <= 65535):
-            raise ValueError("Port must be an integer between 1 and 65535")
-        self._port = port
-
-    @property
-    def username(self) -> str | None:
-        """Get the SSH username.
-
-        Returns:
-            username (str | None): The SSH username.
-        """
-        return self._username
-
-    @username.setter
-    def username(self, username: str) -> None:
-        """Set the SSH username.
-
-        Args:
-            username (str): The SSH username.
-
-        Raises:
-            TypeError: If username is not a string.
-        """
-        if not isinstance(username, str):
-            raise TypeError("Username must be a string")
-        self._username = username
-
-    @property
-    def password(self) -> str | None:
-        """Get the SSH password.
-
-        Returns:
-            password (str | None): The SSH password.
-        """
-        return self._password
-
-    @password.setter
-    def password(self, password: str) -> None:
-        """Set the SSH password.
-
-        Args:
-            password (str): The SSH password.
-
-        Raises:
-            TypeError: If password is not a string.
-        """
-        if not isinstance(password, str):
-            raise TypeError("Password must be a string")
-        self._password = password
-
-    @property
-    def free_letter(self) -> str | None:
-        """Get the first available drive letter.
-
-        Returns:
-            free_letter (str | None): The first available drive letter.
-        """
-        if self._free_letter is None:
-            self._free_letter = self.get_free_drive_letter()
-        return self._free_letter
-
-    def set_client(
-        self,
-        host: str,
-        username: str,
-        password: str,
-        port: int = 22,
-    ) -> None:
-        """Set the client parameters.
-
-        Args:
-            host (str): The host IP address.
-            username (str): The username.
-            password (str): The password.
-            port (int, optional): The port number. Defaults to 22.
-        """
-        self.host = host
-        self.port = port
-        self.username = username
-        self.password = password
+        # return the first available letter
+        if free_letters:
+            pt(f"Get free letter: {sorted(free_letters)[0]}")
+            return sorted(free_letters)[0]
+        else:
+            raise RuntimeError("No available drive letters")
 
     def add_cmdkey(self) -> None:
         """Add the cmdkey for Windows credential manager."""
@@ -270,33 +191,6 @@ class Mount:
     def umount(self) -> None:
         """Unmount the network drive."""
         Subproc.run(f"net use {self.free_letter}: /delete /y")
-
-    @staticmethod
-    def get_free_drive_letter() -> str:
-        """Get a free drive letter for Windows.
-
-        Returns:
-            free_letter (str): The first available drive letter.
-
-        Raises:
-            RuntimeError: If no available drive letters.
-        """
-        # all possible drive letters A-Z
-        all_letters = set("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
-        # get the list of used drive letters
-        result = Subproc.run("wmic logicaldisk get caption")
-        used_letters = result.split()
-
-        # remove used letters from the set of all letters
-        free_letters = all_letters - {letter.strip(":") for letter in used_letters if ":" in letter}
-
-        # return the first available letter
-        if free_letters:
-            pt(f"Get free letter: {sorted(free_letters)[0]}")
-            return sorted(free_letters)[0]
-        else:
-            raise RuntimeError("No available drive letters")
 
     def scp(
         self,
@@ -341,11 +235,9 @@ class Mount:
 
 
 if __name__ == "__main__":
-    mount_manually = Mount()
-    mount_manually.set_client("ip", "username", "password")
+    mount_manually = Mount(host="ip", username="username", password="password")
     mount_manually.add_cmdkey()
-    mount_nas = Mount()
-    mount_nas.set_client("ip", "username", "password")
+    mount_nas = Mount(host="ip", username="username", password="password")
     mount_nas.add_cmdkey()
     mount_nas.mount()
     mount_nas.scp(r"C:\Users\DQV5\Downloads\test.txt", "/share/Public/test.txt")

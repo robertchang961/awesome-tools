@@ -5,8 +5,8 @@ executing commands, and managing connection parameters using paramiko.
 """
 
 import atexit
-import ipaddress
 import time
+from ipaddress import IPv4Address
 
 import paramiko
 
@@ -18,29 +18,26 @@ class SSHClient:
     and managing connection parameters.
 
     Attributes:
-        _host (str | None): The SSH server host (IPv4 address).
-        _port (int | None): The SSH server port.
-        _username (str | None): The SSH username.
-        _password (str | None): The SSH password.
-        client (paramiko.SSHClient): The paramiko SSH client instance.
-        exit_status (int | None): Previous CLI run exit status.
+        _host (str): The SSH server host (IPv4).
+        _username (str): The SSH username.
+        _password (str): The SSH password.
+        _port (int): The SSH server port. Defaults to 22.
+        exit_status (int | None): Previous exit status of run method.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, host: str, username: str, password: str, port: int = 22) -> None:
         """Initialize SSHClient instance.
 
         Sets up the paramiko SSH client and initializes connection parameters.
         """
-        self._host = None
-        self._port = None
-        self._username = None
-        self._password = None
-        self.client = paramiko.SSHClient()
-        self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        self.exit_status = None    # previous cli run exit status
+        self._host = host
+        self._username = username
+        self._password = password
+        self._port = port
+        self.exit_status = None    # previous exit status of run method
 
     @property
-    def host(self) -> str | None:
+    def host(self) -> str:
         """Get the SSH server host.
 
         Returns:
@@ -58,11 +55,11 @@ class SSHClient:
         Raises:
             ipaddress.AddressValueError: If host is not a valid IPv4 address.
         """
-        ipaddress.IPv4Address(host)
+        IPv4Address(host)
         self._host = host
 
     @property
-    def port(self) -> int | None:
+    def port(self) -> int:
         """Get the SSH server port.
 
         Returns:
@@ -130,34 +127,15 @@ class SSHClient:
             raise TypeError("Password must be a string")
         self._password = password
 
-    def set_client(
-        self,
-        host: str,
-        username: str,
-        password: str,
-        port: int = 22,
-    ) -> None:
-        """Set the client parameters and connect to the server.
-
-        Args:
-            host (str): The SSH server host (IPv4 address).
-            username (str): The SSH username.
-            password (str): The SSH password.
-            port (int, optional): The SSH server port. Defaults to 22.
-        """
-        self.host = host
-        self.port = port
-        self.username = username
-        self.password = password
-        self.connect()
-
     def connect(self) -> None:
         """Connect to the SSH server.
 
         Registers the close method to be called at exit.
         """
+        self.client = paramiko.SSHClient()
+        self.client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         self.client.connect(
-            self.host,
+            hostname=self.host,
             port=self.port,
             username=self.username,
             password=self.password,
