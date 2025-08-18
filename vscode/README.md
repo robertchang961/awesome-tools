@@ -79,6 +79,7 @@ code --install-extension ms-vscode.live-server
     "terminal.integrated.suggest.enabled": true,                       // 開啟 PowerShell 擴充的提示
     // Python
     "python.defaultInterpreterPath": "\\path\\to\\python.exe",         // 預設的 Python Interpreter
+    "python.analysis.typeCheckingMode": "basic",                       // Python 的型態檢查模式
     // ruff
     "ruff.configuration": {                                            // Python Ruff 的設定檔
         "include": ["*.py"],

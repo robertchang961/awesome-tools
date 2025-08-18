@@ -27,7 +27,11 @@ class SSHClient(BaseModel):
         exit_status (int | None): Previous exit status of run method. Defaults to None.
     """
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        validate_assignment=True,
+        revalidate_instances="always",    # ["always", "never", "subclass-instances"]
+    )
 
     host: str
     port: int = Field(default=22, ge=1, le=65535)
@@ -77,9 +81,9 @@ class SSHClient(BaseModel):
 
         Args:
             cmd (str): The command to execute on the server.
-            timeout (int, optional): Timeout for command execution in seconds. Defaults to 60.
-            retry (int, optional): Number of retries if command fails. Defaults to 3.
-            return_err (bool, optional): If True, return stderr output. Defaults to False.
+            timeout (int): Timeout for command execution in seconds. Defaults to 60.
+            retry (int): Number of retries if command fails. Defaults to 3.
+            return_err (bool): If True, return stderr output. Defaults to False.
 
         Returns:
             stdout_or_stderr (str): The command output (stdout or stderr).

@@ -12,8 +12,9 @@ import subprocess
 import time
 from datetime import datetime
 from ipaddress import IPv4Address
+from typing import Any
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 def pt(
@@ -26,8 +27,8 @@ def pt(
 
     Args:
         msg (str): The message to print.
-        is_date (bool, optional): Whether to prepend the current date. Defaults to True.
-        is_ansicolor (bool, optional): Whether to use ANSI color formatting. Defaults to False.
+        is_date (bool): Whether to prepend the current date. Defaults to True.
+        is_ansicolor (bool): Whether to use ANSI color formatting. Defaults to False.
     """
     today = datetime.today().isoformat()
     ansicolor_reset_format = r"\033[0m"
@@ -55,10 +56,10 @@ class Subproc:
 
         Args:
             cmd (str): The command to execute.
-            timeout (int, optional): Timeout in seconds. Defaults to 600.
-            shell (bool, optional): Whether to run the command in a shell. Defaults to False.
-            check (bool, optional): Raise error if command fails. Defaults to True.
-            retry (int, optional): Number of retries if command fails. Defaults to 3.
+            timeout (int): Timeout in seconds. Defaults to 600.
+            shell (bool): Whether to run the command in a shell. Defaults to False.
+            check (bool): Raise error if command fails. Defaults to True.
+            retry (int): Number of retries if command fails. Defaults to 3.
 
         Returns:
             stdout_or_stderr (str): The command output (stdout or stderr).
@@ -112,6 +113,11 @@ class Mount(BaseModel):
         free_letter (str | None): The first available drive letter.
     """
 
+    model_config = ConfigDict(
+        validate_assignment=True,
+        revalidate_instances="always",    # ["always", "never", "subclass-instances"]
+    )
+
     host: str
     port: int = Field(default=22, ge=1, le=65535)
     username: str
@@ -125,14 +131,13 @@ class Mount(BaseModel):
         IPv4Address(value)
         return value
 
-    @field_validator("free_letter")
-    @classmethod
-    def validate_free_letter(cls, value: str | None) -> str:
-        """Validate and convert free_letter to uppercase."""
-        print(value)
-        if value is None:
-            value = cls.get_free_drive_letter()
-        return value
+    def model_post_init(self, __context: object) -> None:
+        """Post-initialization hook for the Mount model.
+
+        Sets the free_letter attribute to the first available drive letter if not already set.
+        """
+        if self.free_letter is None:
+            self.free_letter = self.get_free_drive_letter()
 
     @staticmethod
     def get_free_drive_letter() -> str:
@@ -182,7 +187,7 @@ class Mount(BaseModel):
         """Mount the network drive to a local drive letter.
 
         Args:
-            sub_folder (str, optional): The remote folder to mount. Defaults to Public.
+            sub_folder (str): The remote folder to mount. Defaults to Public.
         """
         Subproc.run(rf'net use {self.free_letter}: "\\\\{self.host}\\{sub_folder}"')
         pt(f'net use {self.free_letter}: "\\\\{self.host}\\{sub_folder}" successfully')
@@ -203,7 +208,7 @@ class Mount(BaseModel):
         Args:
             local_file (str): The local file path.
             remote_file (str): The remote file path.
-            copy_to_remote (bool, optional): If True, copy local_file to remote_file. If False, copy remote_file to local_file. Defaults to True.
+            copy_to_remote (bool): If True, copy local_file to remote_file. If False, copy remote_file to local_file. Defaults to True.
         """
         # need to install pscp
         local_file = local_file.replace("\\", "\\\\")
