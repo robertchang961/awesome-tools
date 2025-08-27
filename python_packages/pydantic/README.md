@@ -42,6 +42,10 @@ pydantic.NonNegativeFloat
 pydantic.NonPositiveFloat
 pydantic.FiniteFloat
 
+# secret
+pydantic.SecretBytes
+pydantic.SecretStr
+
 # strict
 pydantic.StrictBool
 pydantic.StrictBytes
@@ -113,7 +117,11 @@ pydantic.alias_generators
 # config
 pydantic.ConfigDict
 
+# validate_call
+pydantic.validate_call
+
 # functional_validators
+pydantic.InstanceOf
 pydantic.AfterValidator
 pydantic.BeforeValidator
 pydantic.PlainValidator
@@ -132,7 +140,23 @@ pydantic.WithJsonSchema
 
 # pydantic_core
 pydantic.ValidationError
+pydantic.ValidationInfo
+pydantic_core.PydanticCustomError
+pydantic_core.PydanticUseDefault
 pydantic_core.from_json
+
+# pydantic_settings
+pydantic_settings.BaseSettings
+pydantic_settings.SettingsConfigDict
+pydantic_settings.SettingsError
+pydantic_settings.CliMutuallyExclusiveGroup
+pydantic_settings.CliSubCommand
+pydantic_settings.CliApp
+pydantic_settings.CliPositionalArg
+pydantic_settings.CliUnknownArgs
+pydantic_settings.CliImplicitFlag
+pydantic_settings.CliExplicitFlag
+pydantic_settings.get_subcommand
 ```
 
 ## 透過 BaseModel 驗證資料
@@ -421,6 +445,7 @@ pydantic_core.from_json
     - `@field_validator` 的參數是欄位名稱，且可以輸入多個欄位名稱。
     - 若使用 `@field_validator("*")`，則會驗證所有欄位。
     - 也可以使用 `AfterValidator` 來實作欄位驗證。
+    - 當定義多個 `AfterValidator`、`BeforeValidator`、`WrapValidator` 時，`AfterValidator` 會依照定義的順序由左至右依序執行，而 `BeforeValidator`、`WrapValidator` 會依照定義的順序由右至左依序執行。
     ```python
     import re
 
@@ -432,7 +457,7 @@ pydantic_core.from_json
         salary: float | None = Field(default=None, gt=0)
         age: int | None = Field(default=None, ge=0)
 
-        @field_validator("name")
+        @field_validator("name", mode="after")
         @classmethod
         def name_should_contain_at_least_one_letter(cls, value: str) -> str:
             """Name should contain at least one letter."""
@@ -542,12 +567,12 @@ pydantic_core.from_json
     ```
 - 若在建立實例後，某個欄位被指派新值時，重新驗證欄位，則需要在 `ConfigDict` 中設定 `validate_assignment=True`。
 - 若在建立實例後，因沒有設定 `validate_assignment=True` 且某個欄位被指派新值時，再以該實例建立新的 Model，重新驗證該實例，則需要在 `ConfigDict` 中設定 `revalidate_instances="always"`。
-- 預設只允許內建的資料型態，若要使用第三方資料型態，則需要在 `ConfigDict` 中設定 `arbitrary_types_allowed=True`。
+- 預設只允許內建的資料型態，若要使用第三方資料型態，則需要在 `ConfigDict` 中設定 `arbitrary_types_allowed=True`。或是使用 `InstanceOf` 來定義欄位型態。
     ```python
     from ipaddress import IPv4Address
 
     import paramiko
-    from pydantic import BaseModel, ConfigDict, Field, field_validator
+    from pydantic import BaseModel, ConfigDict, Field, InstanceOf, field_validator
 
 
     class SSHClient(BaseModel):
@@ -585,6 +610,41 @@ pydantic_core.from_json
             if not IPv4Address(value):
                 raise ValueError("Invalid IPv4 address")
             return value
+
+    class SSHClient2(BaseModel):
+        """SSH client class for paramiko-based SSH operations.
+
+        This class provides methods for connecting to an SSH server, running commands,
+        and managing connection parameters.
+
+        Attributes:
+            host (IPv4Address): The SSH server host (IPv4).
+            port (int): The SSH server port.
+            username (str): The SSH username.
+            password (str): The SSH password.
+            client (paramiko.SSHClient): The paramiko SSH client instance.
+            exit_status (int | None): Previous exit status of run method.
+        """
+
+        model_config = ConfigDict(
+            validate_assignment=True,
+            revalidate_instances="always",    # ["always", "never", "subclass-instances"]
+        )
+
+        host: str
+        port: int = Field(default=22, ge=1, le=65535)
+        username: str
+        password: str
+        client: InstanceOf[paramiko.SSHClient] = Field(default_factory=paramiko.SSHClient)
+        exit_status: int | None = Field(default=None, description="Previous exit status of run method")
+
+        @field_validator("host")
+        @classmethod
+        def validate_host(cls, value: str) -> str:
+            """Validate and convert host to IPv4Address."""
+            if not IPv4Address(value):
+                raise ValueError("Invalid IPv4 address")
+            return value
     ```
 
 ## 將 JSON 轉換為 dict
@@ -603,4 +663,60 @@ pydantic_core.from_json
         employee = from_json('{"name": "Bar", "salary":', allow_partial=True)
         print(employee)
         #{'name': 'Bar'}
+    ```
+
+## 透過 pydantic_settings 進行設定管理
+
+- 使用 `pydantic_settings.BaseSettings` 來定義設定模型。
+- 使用 `pydantic_settings.SettingsConfigDict` 來配置環境變數檔案及其他選項。
+
+### Dotenv 範例
+
+    ```
+    # .env
+    TEST_VAR=test
+    ```
+
+    ```python
+    from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+    class Settings(BaseSettings):
+        model_config = SettingsConfigDict(
+            env_file=".env",
+            env_file_encoding="utf-8",
+            extra="allow",    # ["allow", "ignore", "forbid"]
+        )
+
+    settings = Settings()
+    settings = Settings(_env_file=".env", _env_file_encoding="utf-8")
+    print(settings)
+    #> test_var='test'
+    ```
+
+### Command Line 範例
+
+    ```python
+    import sys
+
+    from pydantic_settings import BaseSettings, SettingsConfigDict, SettingsError
+
+
+    class Settings(BaseSettings):
+        model_config = SettingsConfigDict(
+            cli_parse_args=True,
+            cli_exit_on_error=False,
+        )
+
+        test_var: str | None = None
+
+
+    sys.argv = ["main.py", "--test_var=test"]
+
+    try:
+        settings = Settings()
+        print(settings)
+        #> test_var='test'
+    except SettingsError as e:
+        print(e)
     ```
