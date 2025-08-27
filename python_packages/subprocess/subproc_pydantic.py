@@ -12,7 +12,6 @@ import subprocess
 import time
 from datetime import datetime
 from ipaddress import IPv4Address
-from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
