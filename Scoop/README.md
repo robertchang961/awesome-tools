@@ -33,6 +33,9 @@ scoop search <APP>       # 搜尋應用程式
 scoop install <APP>      # 安裝應用程式
 scoop update <APP>       # 更新指定應用程式
 scoop uninstall <APP>    # 移除指定應用程式
+
+scoop cache rm -a        # 移除所有下載的快取檔案
+scoop cleanup -a         # 移除所有未使用的舊版本應用程式
 ```
 
 ## Awesome Apps
