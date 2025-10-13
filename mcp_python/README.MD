@@ -28,9 +28,6 @@ MCP 讓你能夠建立伺服器，安全且標準化地向 LLM 應用程式提�
 - MCP 由 Data Layer 和 Transport Layer 兩層組成。
     - Data Layer： 定義基於 JSON-RPC 的 Client-Server 通訊協定，包含 Lifecycle Management、Primitives、Notifications 等。
     - Transport Layer： 定義 Client 和 Server 之間資料交換的通訊機制和管道，包含 Transport-Specific Connection Establishment、Message Framing、Authorization。
-        - Stdio： 使用標準輸入輸出在本地執行。
-        - SSE (Server-Sent Events)： 使用 在遠端執行。
-        - Streamable HTTP： 使用 HTTP POST 在遠端執行。
 
 ## 安裝方式
 
@@ -117,7 +114,7 @@ npm install mcp-remote
 - Stdio (Standard Input Output)
     - 透過標準輸入輸出，將 Request 送至 MCP Server。
 - SSE (Server-Sent Events)
-    - 僅能單向由 Server 向 Client 傳輸，但 SSE 額外提供 HTTP 的 POST 方法，允許 Client 向 Server 進行通訊，實現 Client 與 Server 雙向溝通的功能。
+    - 由 Client 向 Server 發送 HTTP 的 POST 請求，建立 SSE 連線，然後 Server 會持續透過 SSE 連線，單向由 Server 向 Client 傳送事件。
     ```python
     """Create a MCP server, register tools, and run MCP server."""
 
@@ -151,6 +148,7 @@ npm install mcp-remote
     }
     ```
 - Streamable HTTP
+    - 透過 HTTP 的 POST 方法，實現 Client 與 Server 雙向溝通的功能。
     ```python
     """Create a MCP server, register tools, and run MCP server."""
 
