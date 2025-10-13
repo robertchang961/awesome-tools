@@ -1,5 +1,12 @@
 # Windows Command
 
+## Windows SDK - Inspect
+
+* 下載並安裝 [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)。
+* [Inspect Tool](https://learn.microsoft.com/en-us/windows/win32/winauto/inspect-objects) 是一款基於 Windows 的工具，可選擇任何 UI 元素並查看 Microsoft UI 自動化屬性和控制模式以及 Microsoft Active Accessibility (MSAA) 屬性。
+* 使用 CMD 開啟 Inspect Tool，Inspect Tool 會在此路徑下 `C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x86\Inspect.exe` (版本號可能會不同)。
+* 接著可以使用 RPA Framework 的 [RPA.Windows](https://rpaframework.org/libraries/windows/python.html) 來操作 Windows GUI。
+
 ## Abbreviations
 
 WMIC (Windows Management Instrumentation Command-line)
