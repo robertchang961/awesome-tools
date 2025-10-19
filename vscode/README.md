@@ -50,6 +50,7 @@ code --install-extension ms-vscode.live-server
 # chat
 @id:chat.agent.maxRequests
 @id:chat.mcp.discovery.enabled
+@id:chat.mcp.gallery.enabled
 @id:chat.instructionsFilesLocations
 @id:chat.promptFilesLocations
 @id:chat.modeFilesLocations
@@ -120,6 +121,7 @@ code --install-extension ms-vscode.live-server
         "cursor-global": true,
         "cursor-workspace": true
     },
+    "chat.mcp.gallery.enabled": true,                                  // 是否啟用 MCP Gallery
     "chat.instructionsFilesLocations": {                               // 客製化 instructions 檔案放置路徑
         ".github/instructions": true
     },
