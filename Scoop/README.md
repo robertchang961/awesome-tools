@@ -24,7 +24,7 @@
 
 以下列出一些常用的 Scoop 指令：
 
-```
+```powershell
 scoop update             # 更新 Scoop 及其 bucket
 scoop update -a          # 更新 Scoop、所有 bucket 及所有已安裝的應用程式
 scoop list               # 列出已安裝的應用程式
@@ -42,7 +42,7 @@ scoop cleanup -a         # 移除所有未使用的舊版本應用程式
 
 以下列出一些常用的應用程式：
 
-```
+```powershell
 main/7zip                 # A multi-format file archiver with high compression ratios
 main/allure               # A flexible lightweight multi-language test report tool
 main/git                  # Distributed version control system
@@ -63,7 +63,31 @@ java/openjdk              # Official General-Availability Release of OpenJDK
 
 - Bucket 是應用程式清單的集合，Scoop 會從這些 bucket 取得應用程式的 manifest (JSON 格式，描述如何安裝應用程式)。
 - 除了預設的 main bucket，也可加入其他 bucket：
-    ```
+    ```powershell
     scoop bucket add extras
     scoop bucket add java
     ```
+
+## 安裝流程
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser    # 允許執行安裝與管理腳本
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+
+scoop install git
+
+scoop bucket add extras
+scoop bucket add java
+
+scoop install jq
+scoop install nodejs
+scoop install openssh
+scoop install python
+scoop install uv
+
+scoop install putty
+scoop install vscode
+scoop install notepadplusplus
+scoop install openjdk
+
+scoop list
+```
