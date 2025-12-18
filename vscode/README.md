@@ -1,6 +1,6 @@
 # VS Code
 
-撰寫時 Visual Studio Code 的版本為 1.106 (November 2025)。
+撰寫時 Visual Studio Code 的版本為 1.107.1 (November 2025)。
 
 ## 常用擴充
 
@@ -58,6 +58,7 @@ code --install-extension GitHub.vscode-pull-request-github
 @id:chat.tools.terminal.autoApprove
 @id:chat.useAgentsMdFile
 @id:chat.useNestedAgentsMdFiles
+@id:chat.agentSessionsViewLocation
 # Source Control
 @id:scm.repositories.selectionMode
 @id:scm.repositories.explorer
@@ -258,6 +259,7 @@ code --install-extension GitHub.vscode-pull-request-github
     },
     "chat.useAgentsMdFile": true,                                      // 是否啟用讀取 AGENTS.md 檔案 (版本 1.104 August 2025 加入)
     "chat.useNestedAgentsMdFiles": true,                               // 是否啟用讀取資料夾中的 AGENTS.md 檔案 (版本 1.105 September 2025 加入)
+    "chat.agentSessionsViewLocation": "view",                          // Agent Sessions 視圖顯示位置 (版本 1.106 October 2025 加入)
     // Source Control
     "scm.repositories.selectionMode": "single",                        // Source Control 選擇模式，預設為 multiple (版本 1.106 October 2025 加入)
     "scm.repositories.explorer": true,                                 // 是否在 Source Control Explorer 顯示 Repositories View (版本 1.106 October 2025 加入)
