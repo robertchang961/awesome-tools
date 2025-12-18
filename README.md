@@ -7,8 +7,6 @@
 # Python
 
 1. `python_packages` 是 Python 常用套件的指令介紹。
-1. `uv` 是一個 Python 套件管理工具。
-1. `ruff` 是一個 Python 的 linter 及 formatter。
 1. `mcp_python` 是介紹 Model Context Protocol 工具。
 
 
