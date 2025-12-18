@@ -1,0 +1,46 @@
+[project]
+name = "awesome-tools"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "allure-pytest>=2.15.2",
+    "django>=5.2.8",
+    "jenkinsapi>=0.3.17",
+    "mcp[cli]>=1.22.0",
+    "paramiko>=4.0.0",
+    "pydantic>=2.12.5",
+    "pytest-cov>=7.0.0",
+    "pytest-playwright>=0.7.2",
+    "python-dotenv>=1.2.1",
+    "python-jenkins>=1.8.3",
+    "requests>=2.32.5",
+    "xmltodict>=1.0.2",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=7.1.0",
+    "ruff>=0.14.7",
+]
+
+[tool.ruff]
+include = ["*.py"]
+show-fixes = true
+line-length = 88
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    "F", "E", "W", "I",
+    "C90", "D", "N",
+    "A", "ANN", "ARG", "B", "COM", "C4", "PT", "Q", "SIM"
+]
+ignore = ["E501", "D104", "D413"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+docstring-code-line-length = 60

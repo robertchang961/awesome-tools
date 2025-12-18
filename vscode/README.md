@@ -129,7 +129,7 @@ code --install-extension GitHub.vscode-pull-request-github
                 "C90", "D", "N",
                 "A", "ANN", "ARG", "B", "COM", "C4", "PT", "Q", "SIM"
             ],
-            "ignore": ["E501", "D413"]
+            "ignore": ["E501", "D104", "D413"]
         },
         "format": {
             "quote-style": "double",
