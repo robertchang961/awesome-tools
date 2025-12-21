@@ -114,7 +114,7 @@ class Mount(BaseModel):
 
     model_config = ConfigDict(
         validate_assignment=True,
-        revalidate_instances="always",    # ["always", "never", "subclass-instances"]
+        revalidate_instances="always",  # ["always", "never", "subclass-instances"]
     )
 
     host: str
@@ -211,10 +211,7 @@ class Mount(BaseModel):
         """
         # need to install pscp
         local_file = local_file.replace("\\", "\\\\")
-        if copy_to_remote:
-            filename = local_file.split("\\")[-1]
-        else:
-            filename = remote_file.split("/")[-1]
+        filename = local_file.split("\\")[-1] if copy_to_remote else remote_file.split("/")[-1]
 
         if copy_to_remote:
             # get the hostkey if it is the first time to connect to the server

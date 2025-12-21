@@ -12,11 +12,11 @@ import requests
 
 
 def send_card(
-        url: str,
-        body: list[dict] | None = None,
-        msteams: dict | None = None,
-        actions: list[dict] | None = None,
-    ) -> bool:
+    url: str,
+    body: list[dict] | None = None,
+    msteams: dict | None = None,
+    actions: list[dict] | None = None,
+) -> bool:
     """Send adaptive card to certain Microsoft Teams Channel."""
     headers = {
         "Content-Type": "application/json",
@@ -49,11 +49,12 @@ def send_card(
         print("Unable to send card to channel!")
         return False
 
+
 def main() -> None:
     """Load environment variables, construct the Teams card payload, and send it to the specified channel."""
     if not dotenv.load_dotenv():
-            print("Could not find the .env file, or it is empty!")
-            sys.exit(1)
+        print("Could not find the .env file, or it is empty!")
+        sys.exit(1)
 
     url = os.getenv("URL")
     email = os.getenv("EMAIL")

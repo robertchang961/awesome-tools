@@ -161,20 +161,20 @@ docstring-code-line-length = 60                 # ["dynamic", int]
     "ruff.configuration": {
         "include": ["*.py"],
         "show-fixes": true,
-        "line-length": 88,
+        "line-length": 120,
         "indent-width": 4,
         "lint": {
             "select": [
-                "F", "E", "W", "I", 
-                "C90", "D", "N", 
+                "F", "E", "W", "I",
+                "C90", "D", "N",
                 "A", "ANN", "ARG", "B", "COM", "C4", "PT", "Q", "SIM"
             ],
-            "ignore": ["E501"]
+            "ignore": ["E501", "D104", "D203", "D213", "D413"]
         },
         "format": {
             "quote-style": "double",
             "indent-style": "space",
-            "docstring-code-format": true, 
+            "docstring-code-format": true,
             "docstring-code-line-length": 60
         }
     }

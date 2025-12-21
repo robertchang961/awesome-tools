@@ -9,7 +9,7 @@ import time
 from ipaddress import IPv4Address
 
 import paramiko
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, InstanceOf, field_validator
 
 
 class SSHClient(BaseModel):
@@ -28,16 +28,15 @@ class SSHClient(BaseModel):
     """
 
     model_config = ConfigDict(
-        arbitrary_types_allowed=True,
         validate_assignment=True,
-        revalidate_instances="always",    # ["always", "never", "subclass-instances"]
+        revalidate_instances="always",  # ["always", "never", "subclass-instances"]
     )
 
     host: str
     port: int = Field(default=22, ge=1, le=65535)
     username: str
     password: str
-    client: paramiko.SSHClient = Field(default_factory=paramiko.SSHClient)
+    client: InstanceOf[paramiko.SSHClient] = Field(default_factory=paramiko.SSHClient)
     exit_status: int | None = Field(default=None, description="Previous exit status of run method")
 
     @field_validator("host")

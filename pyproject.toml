@@ -28,8 +28,9 @@ dev = [
 [tool.ruff]
 include = ["*.py"]
 show-fixes = true
-line-length = 88
+line-length = 120
 indent-width = 4
+src = ["mcp_python/src"]
 
 [tool.ruff.lint]
 select = [
@@ -37,7 +38,7 @@ select = [
     "C90", "D", "N",
     "A", "ANN", "ARG", "B", "COM", "C4", "PT", "Q", "SIM"
 ]
-ignore = ["E501", "D104", "D413"]
+ignore = ["E501", "D104", "D203", "D213", "D413"]
 
 [tool.ruff.format]
 quote-style = "double"

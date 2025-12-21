@@ -34,7 +34,7 @@ class SSHClient:
         self._username = username
         self._password = password
         self._port = port
-        self.exit_status = None    # previous exit status of run method
+        self.exit_status = None  # previous exit status of run method
 
     @property
     def host(self) -> str:

@@ -121,7 +121,7 @@ code --install-extension GitHub.vscode-pull-request-github
     "ruff.configuration": {                                            // Python Ruff 的設定檔
         "include": ["*.py"],
         "show-fixes": true,
-        "line-length": 88,
+        "line-length": 120,
         "indent-width": 4,
         "lint": {
             "select": [
@@ -129,7 +129,7 @@ code --install-extension GitHub.vscode-pull-request-github
                 "C90", "D", "N",
                 "A", "ANN", "ARG", "B", "COM", "C4", "PT", "Q", "SIM"
             ],
-            "ignore": ["E501", "D104", "D413"]
+            "ignore": ["E501", "D104", "D203", "D213", "D413"]
         },
         "format": {
             "quote-style": "double",
