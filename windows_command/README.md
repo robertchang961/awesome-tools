@@ -67,6 +67,36 @@ WMIC (Windows Management Instrumentation Command-line)
     nslookup <domain_name | dns_ip>
     ```
 
+## Credentials
+
+- 列出儲存的認證
+    ```powershell
+    cmdkey /list
+    ```
+- 新增認證
+    ```powershell
+    cmdkey /add:<target_name> /user:<username> /pass:<password>
+    ```
+- 刪除認證
+    ```powershell
+    cmdkey /delete:<target_name>
+    ```
+
+## Network Drive
+
+- 連線網路磁碟機
+    ```powershell
+    net use <drive_letter>: \\<server_name>\<share_name> /user:<username> <password> /persistent:yes
+    ```
+- 斷開網路磁碟機
+    ```powershell
+    net use <drive_letter>: /delete
+    ```
+- 斷開所有網路磁碟機
+    ```powershell
+    net use * /delete /y
+    ```
+
 ## Domain
 
 - 加入 Domain
