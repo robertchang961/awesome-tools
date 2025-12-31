@@ -2,23 +2,41 @@
 
 ## Windows SDK - Inspect
 
+<details>
+<summary>Click to expand</summary>
+
 - 下載並安裝 [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)。
 - [Inspect Tool](https://learn.microsoft.com/en-us/windows/win32/winauto/inspect-objects) 是一款基於 Windows 的工具，可選擇任何 UI 元素並查看 Microsoft UI 自動化屬性和控制模式以及 Microsoft Active Accessibility (MSAA) 屬性。
 - 使用 CMD 開啟 Inspect Tool，Inspect Tool 會在此路徑下 `C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x86\Inspect.exe` (版本號可能會不同)。
 - 接著可以使用 RPA Framework 的 [RPA.Windows](https://rpaframework.org/libraries/windows/python.html) 來操作 Windows GUI。
 
+</details>
+
 ## Abbreviations
+
+<details>
+<summary>Click to expand</summary>
 
 WMIC (Windows Management Instrumentation Command-line)
 
+</details>
+
 ## Pause System Updates
+
+<details>
+<summary>Click to expand</summary>
 
 - 暫停 Windows 系統更新。
     ```powershell
     irm bit.ly/SetWinUpd | iex; Set-WUPause 3650
     ```
 
+</details>
+
 ## File Operations
+
+<details>
+<summary>Click to expand</summary>
 
 - 顯示當前工作目錄。
     ```powershell
@@ -93,7 +111,12 @@ WMIC (Windows Management Instrumentation Command-line)
     cat <path>
     ```
 
+</details>
+
 ## Basic
+
+<details>
+<summary>Click to expand</summary>
 
 - 查詢電腦資訊。
     ```powershell
@@ -114,7 +137,49 @@ WMIC (Windows Management Instrumentation Command-line)
     Get-ComputerInfo | Select-Object -ExpandProperty CsName
     ```
 
+</details>
+
+## OpenSSH
+
+<details>
+<summary>Click to expand</summary>
+
+- 查詢是否已安裝 OpenSSH。
+    ```powershell
+    Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
+    ```
+- 安裝 OpenSSH Client。
+    ```powershell
+    Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+    ```
+- 安裝 OpenSSH Server。
+    ```powershell
+    Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+    ```
+- 啟動 OpenSSH Server 服務。
+    ```powershell
+    Start-Service sshd
+    ```
+    ```powershell
+    Set-Service -Name sshd -StartupType 'Automatic'
+    ```
+- 設定防火牆允許 OpenSSH 連線。
+    ```powershell
+    if (!(Get-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue | Select-Object Name, Enabled)) {
+        Write-Output "Firewall Rule 'OpenSSH-Server-In-TCP' does not exist, creating it..."
+        New-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+    } else {
+
+        Write-Output "Firewall rule 'OpenSSH-Server-In-TCP' has been created and exists."
+    }
+    ```
+
+</details>
+
 ## Credentials
+
+<details>
+<summary>Click to expand</summary>
 
 - 列出儲存的認證。
     ```powershell
@@ -129,7 +194,12 @@ WMIC (Windows Management Instrumentation Command-line)
     cmdkey /delete:<target_name>
     ```
 
+</details>
+
 ## Network Drive
+
+<details>
+<summary>Click to expand</summary>
 
 - 連線網路磁碟機。
     ```powershell
@@ -144,7 +214,12 @@ WMIC (Windows Management Instrumentation Command-line)
     net use * /delete /y
     ```
 
+</details>
+
 ## DNS
+
+<details>
+<summary>Click to expand</summary>
 
 - 查詢 DNS Name。
     ```powershell
@@ -172,7 +247,12 @@ WMIC (Windows Management Instrumentation Command-line)
     nslookup <domain_name | dns_ip>
     ```
 
+</details>
+
 ## Domain
+
+<details>
+<summary>Click to expand</summary>
 
 - 加入 Domain。
     ```powershell
@@ -237,7 +317,12 @@ WMIC (Windows Management Instrumentation Command-line)
     dsquery computer -name <computer_name>
     ```
 
+</details>
+
 ## Share Folder
+
+<details>
+<summary>Click to expand</summary>
 
 - 設定 Share Folder 權限。
     ```powershell
@@ -248,3 +333,5 @@ WMIC (Windows Management Instrumentation Command-line)
     ```powershell
     net share <share_folder_name> /delete /y
     ```
+
+</details>
