@@ -1,8 +1,14 @@
-# Python
+# https://github.com/github/gitignore/blob/main/Python.gitignore
+
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
+*.py[codz]
 *$py.class
+
+# C extensions
 *.so
+
+# Distribution / packaging
 .Python
 build/
 develop-eggs/
@@ -22,8 +28,24 @@ share/python-wheels/
 *.egg
 MANIFEST
 
-# Virtual Environments
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py.cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Environments
 .env
+.envrc
 .venv
 env/
 venv/
@@ -31,14 +53,12 @@ ENV/
 env.bak/
 venv.bak/
 
-# Pytest
-.pytest_cache/
+# Ruff
+.ruff_cache/
 
 # Playwright
 /test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
 
-# Ruff
-.ruff_cache/
+# Allure
+/allure-results/
+/allure-report/

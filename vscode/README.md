@@ -45,7 +45,7 @@ code --install-extension GitHub.vscode-pull-request-github
 # Python
 @id:python.defaultInterpreterPath
 # ruff
-@id:ruff.configuration
+@id:ruff.configurationPreference
 # chat
 @id:chat.checkpoints.enabled
 @id:chat.checkpoints.showFileChanges
@@ -58,7 +58,7 @@ code --install-extension GitHub.vscode-pull-request-github
 @id:chat.tools.terminal.autoApprove
 @id:chat.useAgentsMdFile
 @id:chat.useNestedAgentsMdFiles
-@id:chat.agentSessionsViewLocation
+@id:chat.useAgentSkills
 # Source Control
 @id:scm.repositories.selectionMode
 @id:scm.repositories.explorer
@@ -118,26 +118,7 @@ code --install-extension GitHub.vscode-pull-request-github
     // Python
     "python.defaultInterpreterPath": "\\path\\to\\python.exe",         // 預設的 Python Interpreter
     // ruff
-    "ruff.configuration": {                                            // Python Ruff 的設定檔
-        "include": ["*.py"],
-        "show-fixes": true,
-        "line-length": 120,
-        "indent-width": 4,
-        "lint": {
-            "select": [
-                "F", "E", "W", "I",
-                "C90", "D", "N",
-                "A", "ANN", "ARG", "B", "COM", "C4", "PT", "Q", "SIM"
-            ],
-            "ignore": ["E501", "D104", "D203", "D213", "D413"]
-        },
-        "format": {
-            "quote-style": "double",
-            "indent-style": "space",
-            "docstring-code-format": true,
-            "docstring-code-line-length": 60
-        }
-    },
+    "ruff.configurationPreference": "filesystemFirst",                 // ruff 設定檔優先使用檔案系統中的設定
     // chat
     "chat.checkpoints.enabled": true,                                  // 是否啟用 Checkpoints 功能 (版本 1.103 July 2025 加入)
     "chat.checkpoints.showFileChanges": true,                          // 是否啟用在 Checkpoints 中顯示檔案變更 (版本 1.103 July 2025 加入)
@@ -259,7 +240,7 @@ code --install-extension GitHub.vscode-pull-request-github
     },
     "chat.useAgentsMdFile": true,                                      // 是否啟用讀取 AGENTS.md 檔案 (版本 1.104 August 2025 加入)
     "chat.useNestedAgentsMdFiles": true,                               // 是否啟用讀取資料夾中的 AGENTS.md 檔案 (版本 1.105 September 2025 加入)
-    "chat.agentSessionsViewLocation": "view",                          // Agent Sessions 視圖顯示位置 (版本 1.106 October 2025 加入)
+    "chat.useAgentSkills": true,                                       // 是否啟用 Agent Skills 功能 (版本 1.108 December 2025 加入)
     // Source Control
     "scm.repositories.selectionMode": "single",                        // Source Control 選擇模式，預設為 multiple (版本 1.106 October 2025 加入)
     "scm.repositories.explorer": true,                                 // 是否在 Source Control Explorer 顯示 Repositories View (版本 1.106 October 2025 加入)

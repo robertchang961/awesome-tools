@@ -28,7 +28,7 @@ dev = [
 [tool.ruff]
 include = ["*.py"]
 show-fixes = true
-line-length = 120
+line-length = 200
 indent-width = 4
 src = ["mcp_python/src"]
 
@@ -36,7 +36,7 @@ src = ["mcp_python/src"]
 select = [
     "F", "E", "W", "I",
     "C90", "D", "N",
-    "A", "ANN", "ARG", "B", "COM", "C4", "PT", "Q", "SIM"
+    "A", "ANN", "B", "COM", "C4", "PT", "Q", "SIM"
 ]
 ignore = ["E501", "D104", "D203", "D213", "D413"]
 
